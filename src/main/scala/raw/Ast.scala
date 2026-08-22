@@ -1,6 +1,8 @@
 package raw
 
-enum Expr:
-  case IntLiteral(value: BigInt)
-  case BoolLiteral(value: Boolean)
-  case StringLiteral(value: String)
+sealed trait Expr
+
+enum Literal extends Expr:
+  case Int(value: BigInt)
+  case Bool(value: Boolean)
+  case String(value: String)

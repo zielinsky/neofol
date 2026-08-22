@@ -10,5 +10,4 @@ lazy val root = project
     scalaVersion := scala3Version,
 
     libraryDependencies += "org.scalameta" %% "munit" % "1.3.4" % Test,
-    libraryDependencies += "org.antlr" % "antlr4-runtime" % "4.13.2"
   )
