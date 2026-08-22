@@ -12,11 +12,13 @@ final case class SourceFile(
 
 object SourceFile:
 
-  def read(path: Path): Either[Diagnostic, SourceFile] =
-    Try(Files.readString(path, StandardCharsets.UTF_8)).toEither.left
-      .map(error =>
-        Diagnostic(
-          s"Cannot read '$path': ${error.getMessage}"
-        )
-      )
-      .map(content => SourceFile(path, content))
+  def read(path: Path): Compilation[SourceFile] =
+    Try(Files.readString(path, StandardCharsets.UTF_8)).fold(
+      error =>
+        Compilation.failure(
+          Vector(
+            SourceReadError(path, error.getMessage)
+          )
+        ),
+      content => Compilation.success(SourceFile(path, content))
+    )

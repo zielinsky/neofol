@@ -11,9 +11,8 @@ import java.nio.file.Path
       expression <- compiler.compile(source)
     yield expression
 
-  result match
-    case Right(expression) =>
-      println(expression)
+  result.diagnostics.foreach(diagnostic =>
+    Console.err.println(diagnostic.render)
+  )
 
-    case Left(diagnostic) =>
-      Console.err.println(s"Error: ${diagnostic.message}")
+  if result.succeeded then result.output.foreach(println)

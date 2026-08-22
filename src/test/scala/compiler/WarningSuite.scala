@@ -1,2 +1,3 @@
 package compiler
 
+object WarningSuite
