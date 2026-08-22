@@ -3,10 +3,12 @@ package raw
 import org.antlr.v4.runtime.{CharStreams, CommonTokenStream}
 import raw.antlr.{NeofolLexer, NeofolParser}
 
-import compiler.{Transform, Diagnostic}
+import compiler.{Transform, Diagnostic, Options}
 
 object Raw extends Transform[String, Expr]:
-  override def transform(source: String): Either[Diagnostic, Expr] =
+  override def transform(source: String)(using
+      Options
+  ): Either[Diagnostic, Expr] =
     val lexer = new NeofolLexer(CharStreams.fromString(source))
     val tokens = new CommonTokenStream(lexer)
     val parser = new NeofolParser(tokens)
