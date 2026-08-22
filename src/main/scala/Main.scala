@@ -1,13 +1,19 @@
-import raw.Raw
-import compiler.Options
+import compiler.{Compiler, Options, SourceFile}
 
-@main def neofol(): Unit = 
-  val source = "123"
+import java.nio.file.Path
 
-  given Options = Options()
+@main def neofol(file: String): Unit =
+  val compiler = Compiler(Options())
 
-  Raw.transform(source) match
+  val result =
+    for
+      source <- SourceFile.read(Path.of(file))
+      expression <- compiler.compile(source)
+    yield expression
+
+  result match
     case Right(expression) =>
-      println(s"AST: $expression")
+      println(expression)
+
     case Left(diagnostic) =>
       Console.err.println(s"Error: ${diagnostic.message}")
