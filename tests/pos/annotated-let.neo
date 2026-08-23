@@ -1,0 +1,1 @@
+let (identity : Int) (value : Int) = value
