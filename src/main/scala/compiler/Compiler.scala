@@ -32,6 +32,9 @@ final case class Compilation[+A](
   def succeeded: Boolean =
     output.nonEmpty && !hasErrors
 
+  def failed: Boolean =
+    output.isEmpty && hasErrors
+
 object Compilation:
   def success[A](output: A): Compilation[A] =
     Compilation(Some(output), Vector.empty)

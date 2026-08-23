@@ -1,3 +1,34 @@
 package compiler
 
-object NegativeSuite
+import java.nio.file.{Files, Path}
+import scala.jdk.CollectionConverters.*
+import scala.util.Using
+
+class NegativeSuite extends munit.FunSuite:
+
+  private val compiler = Compiler(Options())
+  private val root = Path.of("tests", "neg")
+
+  private val programs =
+    Using.resource(Files.walk(root)) { paths =>
+      paths
+        .iterator()
+        .asScala
+        .filter(path => Files.isRegularFile(path))
+        .filter(_.toString.endsWith(".neo"))
+        .toList
+        .sortBy(_.toString)
+    }
+
+  programs.foreach { path =>
+    val relativePath = root.relativize(path)
+
+    test(s"$relativePath compiles with error"):
+      val compilation =
+        SourceFile.read(path).flatMap(compiler.compile)
+
+      assert(
+        compilation.failed,
+        s"$relativePath was expected to fail: ${compilation.diagnostics.mkString(", ")}"
+      )
+  }
